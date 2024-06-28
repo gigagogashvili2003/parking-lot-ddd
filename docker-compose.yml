@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  auth-service:
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: npm run start:dev auth
+    restart: always
+    depends_on:
+      - db
+      - nats
+
+  users-service:
+    container_name: users-service
+    build:
+      context: .
+      dockerfile: ./apps/users/Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3001:3001
+    restart: always
+    command: npm run start:dev users
+    depends_on:
+      - db
+      - nats
+      - auth-service
+
+  db:
+    image: postgres:15
+    container_name: db
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nats:
+    image: nats:latest
+    ports:
+      - '4222:4222'
+      - '8222:8222'
+
+volumes:
+  app:
+  postgres_data:
