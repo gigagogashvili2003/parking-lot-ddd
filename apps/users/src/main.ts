@@ -5,12 +5,14 @@ import { NatsService } from '@app/nats/services';
 import { NATS_SERVICE } from '@app/nats/constants';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
   const brokerService = app.get<NatsService>(NATS_SERVICE);
   const configService = app.get<ConfigService>(ConfigService);
-  const port = parseInt(configService.get('SERVER_PORT'));
+  const logger = new Logger();
+  const port = parseInt(configService.getOrThrow('SERVER_PORT'));
 
   const config = new DocumentBuilder()
     .setTitle('Users service')
@@ -21,11 +23,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  app.connectMicroservice<MicroserviceOptions>(
-    brokerService.getBrokerOptions('USERS_SERVICE', 'users'),
-  );
+  app.connectMicroservice<MicroserviceOptions>(brokerService.getBrokerOptions('USERS_SERVICE', 'users'));
 
-  app.startAllMicroservices();
+  await app.startAllMicroservices();
   await app.listen(port);
+  logger.log(`Users service started on port:${port}`);
 }
 bootstrap();

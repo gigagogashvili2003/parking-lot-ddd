@@ -1,7 +1,8 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { NatsModule } from '@app/nats';
 import { ConfigModule } from '@nestjs/config';
 import { ProxyAllowMiddleware } from './application/middlewares';
+import { RequestLoggerMiddleware } from '@app/common/middlewares';
 
 @Module({
   imports: [
@@ -12,10 +13,10 @@ import { ProxyAllowMiddleware } from './application/middlewares';
     ]),
   ],
   controllers: [],
-  providers: [],
+  providers: [Logger],
 })
 export class GatewayModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ProxyAllowMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer.apply(RequestLoggerMiddleware, ProxyAllowMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
