@@ -37,13 +37,13 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
-    "broker": {
+    "nats": {
       "type": "library",
-      "root": "libs/broker",
+      "root": "libs/nats",
       "entryFile": "index",
-      "sourceRoot": "libs/broker/src",
+      "sourceRoot": "libs/nats/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/broker/tsconfig.lib.json"
+        "tsConfigPath": "libs/nats/tsconfig.lib.json"
       }
     }
   }

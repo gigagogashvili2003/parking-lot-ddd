@@ -18,18 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/common": [
-        "libs/common/src"
-      ],
-      "@app/common/*": [
-        "libs/common/src/*"
-      ],
-      "@app/broker": [
-        "libs/broker/src"
-      ],
-      "@app/broker/*": [
-        "libs/broker/src/*"
-      ]
+      "@app/common": ["libs/common/src"],
+      "@app/common/*": ["libs/common/src/*"],
+      "@app/nats": ["libs/nats/src"],
+      "@app/nats/*": ["libs/nats/src/*"]
     }
   }
 }

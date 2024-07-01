@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
-import { BrokerService } from '@app/broker/services';
-import { BROKER_SERVICE } from '@app/broker/constants';
+import { NatsService } from '@app/nats/services';
+import { NATS_SERVICE } from '@app/nats/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
-  const brokerService = app.get<BrokerService>(BROKER_SERVICE);
+  const brokerService = app.get<NatsService>(NATS_SERVICE);
 
   app.connectMicroservice<MicroserviceOptions>(
     brokerService.getBrokerOptions('users'),

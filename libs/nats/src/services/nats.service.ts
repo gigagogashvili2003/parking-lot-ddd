@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 @Injectable()
-export class BrokerService {
+export class NatsService {
   public constructor(private readonly configService: ConfigService) {}
 
   public getBrokerOptions(queue?: string): MicroserviceOptions {

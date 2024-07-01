@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { brokerProviders } from './providers';
 import { ConfigModule } from '@nestjs/config';
+import { natsProviders } from './providers';
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
-  providers: [...brokerProviders],
-  exports: [...brokerProviders],
+  providers: [...natsProviders],
+  exports: [...natsProviders],
 })
-export class BrokerModule {}
+export class NatsModule {}
