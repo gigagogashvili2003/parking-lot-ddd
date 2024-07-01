@@ -1,12 +1,11 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AuthController {
   constructor() {}
 
   @Get()
-  getHell(@Req() req) {
-    console.log(req);
+  getHell() {
     return 'Hello from auth';
   }
 

@@ -12,7 +12,6 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   const port = parseInt(configService.get('SERVER_PORT'));
 
-  console.log(configService);
   app.connectMicroservice<MicroserviceOptions>(
     brokerService.getBrokerOptions('AUTH_SERVICE', 'auth'),
   );
