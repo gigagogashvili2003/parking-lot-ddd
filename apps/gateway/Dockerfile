@@ -6,10 +6,10 @@ COPY package*.json .
 
 RUN npm install
 
-COPY ./apps/users .
+COPY . .
 
-ENV PORT=3002
+ENV PORT=3000
 
 EXPOSE $PORT
 
-CMD ["npm", "run", "start:dev", "auth"]
+CMD ["npm", "run", "start:dev", "gateway"]

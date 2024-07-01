@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { NatsModule } from '@app/nats';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [NatsModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: 'apps/users/.env' }),
+    NatsModule,
+  ],
   controllers: [UsersController],
   providers: [],
 })

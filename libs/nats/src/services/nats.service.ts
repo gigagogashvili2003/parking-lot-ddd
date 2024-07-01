@@ -6,7 +6,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 export class NatsService {
   public constructor(private readonly configService: ConfigService) {}
 
-  public getBrokerOptions(queue?: string): MicroserviceOptions {
+  public getBrokerOptions(name: string, queue: string): MicroserviceOptions {
     const host = this.configService.getOrThrow('NATS_HOST');
     const port = this.configService.getOrThrow('NATS_PORT');
 
@@ -14,6 +14,7 @@ export class NatsService {
       transport: Transport.NATS,
       options: {
         servers: [`nats://${host}:${port}`],
+        name,
         queue,
       },
     };

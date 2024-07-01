@@ -1,6 +1,22 @@
 version: '3.7'
 
 services:
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: npm run start:dev gateway
+    restart: always
+    depends_on:
+      - db
+      - nats
+
   auth-service:
     container_name: auth-service
     build:
@@ -10,12 +26,13 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - 3000:3000
+      - 3001:3001
     command: npm run start:dev auth
     restart: always
     depends_on:
       - db
       - nats
+      - gateway
 
   users-service:
     container_name: users-service
@@ -26,13 +43,13 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - 3001:3001
+      - 3002:3002
     restart: always
     command: npm run start:dev users
     depends_on:
       - db
       - nats
-      - auth-service
+      - gateway
 
   db:
     image: postgres:15
