@@ -1,9 +1,9 @@
 import { Entity } from '@app/common/abstracts';
 import { IUserProps } from '../interfaces';
 import { UUID } from '@app/common/types';
-import { Email, FirstName, LastName } from '../value-objects';
+import { Email, FirstName, LastName, Password } from '../value-objects';
 
-export class UserEntity extends Entity<IUserProps> {
+export class User extends Entity<IUserProps> {
     public constructor(props: IUserProps, id?: UUID) {
         super(props, id);
     }
@@ -18,5 +18,9 @@ export class UserEntity extends Entity<IUserProps> {
 
     public get email(): Email {
         return this.props.email;
+    }
+
+    public get password(): Password {
+        return this.props.password;
     }
 }
