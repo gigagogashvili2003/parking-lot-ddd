@@ -1,0 +1,1 @@
+export const CREATE_USER_USECASE = Symbol('CREATE_USER_USECASE');

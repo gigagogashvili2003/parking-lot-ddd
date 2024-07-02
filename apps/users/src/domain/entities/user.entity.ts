@@ -1,4 +1,4 @@
-import { Entity } from '@app/common/abstraction';
+import { Entity } from '@app/common/abstracts';
 import { IUserProps } from '../interfaces';
 import { UUID } from '@app/common/types';
 import { Email, FirstName, LastName } from '../value-objects';

@@ -1,4 +1,4 @@
-import { ValueObject } from '@app/common/abstraction';
+import { ValueObject } from '@app/common/abstracts';
 
 interface IPasswordProps {
     value: string;
