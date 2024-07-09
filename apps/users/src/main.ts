@@ -13,7 +13,6 @@ async function bootstrap() {
     const configService = app.get<ConfigService>(ConfigService);
     const logger = new Logger();
     const port = parseInt(configService.getOrThrow('SERVER_PORT'));
-    console.log(port);
 
     const config = new DocumentBuilder()
         .setTitle('Users service')

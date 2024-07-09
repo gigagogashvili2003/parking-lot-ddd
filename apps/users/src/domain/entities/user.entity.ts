@@ -8,6 +8,10 @@ export class User extends Entity<IUserProps> {
         super(props, id);
     }
 
+    public get id(): UUID {
+        return this._id;
+    }
+
     public get firstName(): FirstName {
         return this.props.firstName;
     }

@@ -5,11 +5,13 @@ import { UsersController } from './application/controllers';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { commands, handlers, models, repositories, usecases } from './providers';
+import { DbModule } from '@app/db';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature(models),
         ConfigModule.forRoot({ envFilePath: 'apps/users/.env' }),
+        DbModule,
         CqrsModule,
         NatsModule,
     ],
