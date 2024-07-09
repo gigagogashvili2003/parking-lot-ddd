@@ -8,25 +8,26 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UsersModule);
-  const brokerService = app.get<NatsService>(NATS_SERVICE);
-  const configService = app.get<ConfigService>(ConfigService);
-  const logger = new Logger();
-  const port = parseInt(configService.getOrThrow('SERVER_PORT'));
+    const app = await NestFactory.create(UsersModule);
+    const brokerService = app.get<NatsService>(NATS_SERVICE);
+    const configService = app.get<ConfigService>(ConfigService);
+    const logger = new Logger();
+    const port = parseInt(configService.getOrThrow('SERVER_PORT'));
+    console.log(port);
 
-  const config = new DocumentBuilder()
-    .setTitle('Users service')
-    .setVersion('1.0')
-    .addTag('users')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+    const config = new DocumentBuilder()
+        .setTitle('Users service')
+        .setVersion('1.0')
+        .addTag('users')
+        .addBearerAuth()
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
 
-  app.connectMicroservice<MicroserviceOptions>(brokerService.getBrokerOptions('USERS_SERVICE', 'users'));
+    app.connectMicroservice<MicroserviceOptions>(brokerService.getBrokerOptions('USERS_SERVICE', 'users'));
 
-  await app.startAllMicroservices();
-  await app.listen(port);
-  logger.log(`Users service started on port:${port}`);
+    await app.startAllMicroservices();
+    await app.listen(port);
+    logger.log(`Users service started on port:${port}`);
 }
 bootstrap();

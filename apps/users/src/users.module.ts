@@ -1,23 +1,25 @@
-import { Logger, MiddlewareConsumer, Module, NestModule, Provider, RequestMethod } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { NatsModule } from '@app/nats';
 import { ConfigModule } from '@nestjs/config';
-import { ProxyAllowMiddleware } from 'apps/gateway/src/application/middlewares';
 import { UsersController } from './application/controllers';
-import { RequestLoggerMiddleware } from '@app/common/middlewares';
-import { CreateUserUsecase } from './application/usecases/create-user.usecase';
-import { CREATE_USER_USECASE } from './constants';
-
-const usecases: Provider[] = [{ provide: CREATE_USER_USECASE, useClass: CreateUserUsecase }];
+import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { commands, handlers, models, repositories, usecases } from './providers';
 
 @Module({
-    imports: [ConfigModule.forRoot({ envFilePath: 'apps/users/.env' }), NatsModule],
+    imports: [
+        TypeOrmModule.forFeature(models),
+        ConfigModule.forRoot({ envFilePath: 'apps/users/.env' }),
+        CqrsModule,
+        NatsModule,
+    ],
     controllers: [UsersController],
-    providers: [Logger, ...usecases],
+    providers: [Logger, ...repositories, ...usecases, ...commands, ...handlers],
 })
-export class UsersModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply(RequestLoggerMiddleware, ProxyAllowMiddleware)
-            .forRoutes({ path: '*', method: RequestMethod.ALL });
-    }
+export class UsersModule {
+    // configure(consumer: MiddlewareConsumer) {
+    //     consumer
+    //         .apply(RequestLoggerMiddleware, ProxyAllowMiddleware)
+    //         .forRoutes({ path: '*', method: RequestMethod.ALL });
+    // }
 }
