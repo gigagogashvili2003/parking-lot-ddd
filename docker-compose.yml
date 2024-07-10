@@ -1,85 +1,112 @@
 version: '3.7'
 
 services:
-  nginx:
-    image: nginx:latest
-    ports:
-      - '80:80'
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/upstream.conf:/etc/nginx/upstream.conf
+    nginx:
+        image: nginx:latest
+        ports:
+            - '80:80'
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/upstream.conf:/etc/nginx/upstream.conf
 
-    depends_on:
-      - gateway
-      - auth-service
-      - users-service
+        depends_on:
+            - gateway
+            - auth-service
+            - users-service
 
-  gateway:
-    container_name: gateway
-    build:
-      context: .
-      dockerfile: ./apps/gateway/Dockerfile
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - 3000:3000
-    command: npm run start:dev gateway
-    restart: always
-    depends_on:
-      - db
-      - nats
+    gateway:
+        container_name: gateway
+        build:
+            context: .
+            dockerfile: ./apps/gateway/Dockerfile
+        volumes:
+            - .:/app
+            - /app/node_modules
+        ports:
+            - 3000:3000
+        command: npm run start:dev gateway
+        restart: always
+        depends_on:
+            - db
+            - eventstore.db
+            - nats
 
-  auth-service:
-    container_name: auth-service
-    build:
-      context: .
-      dockerfile: ./apps/auth/Dockerfile
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - 3001:3001
-    command: npm run start:dev auth
-    restart: always
-    depends_on:
-      - db
-      - nats
-      - gateway
+    auth-service:
+        container_name: auth-service
+        build:
+            context: .
+            dockerfile: ./apps/auth/Dockerfile
+        volumes:
+            - .:/app
+            - /app/node_modules
+        ports:
+            - 3001:3001
+        command: npm run start:dev auth
+        restart: always
+        depends_on:
+            - db
+            - eventstore.db
+            - nats
+            - gateway
 
-  users-service:
-    container_name: users-service
-    build:
-      context: .
-      dockerfile: ./apps/users/Dockerfile
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - 3002:3002
-    restart: always
-    command: npm run start:dev users
-    depends_on:
-      - db
-      - nats
-      - gateway
+    users-service:
+        container_name: users-service
+        build:
+            context: .
+            dockerfile: ./apps/users/Dockerfile
+        volumes:
+            - .:/app
+            - /app/node_modules
+        ports:
+            - 3002:3002
+        restart: always
+        command: npm run start:dev users
+        depends_on:
+            - db
+            - eventstore.db
+            - nats
+            - gateway
 
-  db:
-    image: postgres:15
-    container_name: db
-    ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    db:
+        image: postgres:15
+        container_name: db
+        ports:
+            - ${POSTGRES_PORT}:${POSTGRES_PORT}
+        env_file:
+            - .env
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+    eventstore.db:
+        container_name: eventstore.db
+        image: eventstore/eventstore:21.6.0-buster-slim
+        environment:
+            - EVENTSTORE_CLUSTER_SIZE=1
+            - EVENTSTORE_RUN_PROJECTIONS=All
+            - EVENTSTORE_START_STANDARD_PROJECTIONS=true
+            - EVENTSTORE_EXT_TCP_PORT=1113
+            - EVENTSTORE_HTTP_PORT=2113
+            - EVENTSTORE_INSECURE=true
+            - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+            - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+        ports:
+            - '1113:1113'
+            - '2113:2113'
+        volumes:
+            - type: volume
+              source: eventstore-volume-data
+              target: /c/data/eventstore/data
+            - type: volume
+              source: eventstore-volume-logs
+              target: /c/data/eventstore/logs
 
-  nats:
-    image: nats:latest
-    ports:
-      - '4222:4222'
-      - '8222:8222'
+    nats:
+        image: nats:latest
+        ports:
+            - '4222:4222'
+            - '8222:8222'
 
 volumes:
-  app:
-  postgres_data:
+    app:
+    postgres_data:
+    eventstore-volume-data:
+    eventstore-volume-logs:

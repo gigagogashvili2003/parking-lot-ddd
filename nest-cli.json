@@ -63,6 +63,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/db/tsconfig.lib.json"
       }
+    },
+    "eventstore-db": {
+      "type": "library",
+      "root": "libs/eventstore-db",
+      "entryFile": "index",
+      "sourceRoot": "libs/eventstore-db/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eventstore-db/tsconfig.lib.json"
+      }
     }
   }
 }

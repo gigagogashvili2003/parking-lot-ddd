@@ -35,6 +35,12 @@
       ],
       "@app/db/*": [
         "libs/db/src/*"
+      ],
+      "@app/eventstore-db": [
+        "libs/eventstore-db/src"
+      ],
+      "@app/eventstore-db/*": [
+        "libs/eventstore-db/src/*"
       ]
     }
   }

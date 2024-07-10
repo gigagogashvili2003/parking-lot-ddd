@@ -1,4 +1,4 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { NatsModule } from '@app/nats';
 import { ConfigModule } from '@nestjs/config';
 import { UsersController } from './application/controllers';
@@ -6,6 +6,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { commands, handlers, models, repositories, usecases } from './providers';
 import { DbModule } from '@app/db';
+import { client as eventStore } from '@app/eventstore-db';
+import { streamNameFilter } from '@eventstore/db-client';
 
 @Module({
     imports: [
@@ -18,7 +20,29 @@ import { DbModule } from '@app/db';
     controllers: [UsersController],
     providers: [Logger, ...repositories, ...usecases, ...commands, ...handlers],
 })
-export class UsersModule {
+export class UsersModule implements OnModuleInit {
+    public onModuleInit() {
+        this.startBackgroundSubscription();
+    }
+
+    private startBackgroundSubscription() {
+        (async (): Promise<void> => {
+            await this.subscribeToAllStorageEvents();
+        })();
+    }
+
+    private async subscribeToAllStorageEvents() {
+        const subscription = eventStore.subscribeToAll({
+            filter: streamNameFilter({ prefixes: ['users-stream'] }),
+        });
+
+        for await (const resolvedEvent of subscription) {
+            console.log(`Received event ${resolvedEvent.event?.revision}@${resolvedEvent.event?.streamId}`);
+            const data: any = resolvedEvent.event.data;
+            console.log('data:', data);
+        }
+    }
+
     // configure(consumer: MiddlewareConsumer) {
     //     consumer
     //         .apply(RequestLoggerMiddleware, ProxyAllowMiddleware)

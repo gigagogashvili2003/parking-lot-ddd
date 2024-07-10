@@ -10,7 +10,7 @@ export class UsersController {
 
     @Post()
     @UsePipes(new ZodValidationPipe(CreateUserSchema))
-    public create(@Body() createUserDto: CreateUserDto) {
+    public async create(@Body() createUserDto: CreateUserDto) {
         return this.createUserUsecase.execute(createUserDto);
     }
 }

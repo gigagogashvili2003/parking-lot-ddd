@@ -6,6 +6,7 @@ import { NATS_SERVICE } from '@app/nats/constants';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from '@nestjs/common';
+import { connect as connectToEventStore } from '@app/eventstore-db';
 
 async function bootstrap() {
     const app = await NestFactory.create(UsersModule);
@@ -25,6 +26,7 @@ async function bootstrap() {
 
     app.connectMicroservice<MicroserviceOptions>(brokerService.getBrokerOptions('USERS_SERVICE', 'users'));
 
+    await connectToEventStore();
     await app.startAllMicroservices();
     await app.listen(port);
     logger.log(`Users service started on port:${port}`);
