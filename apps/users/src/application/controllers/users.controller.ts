@@ -1,12 +1,17 @@
 import { ZodValidationPipe } from '@app/common/pipes';
-import { Body, Controller, Inject, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, UsePipes } from '@nestjs/common';
 import { CreateUserDto, CreateUserSchema } from '../schemas';
 import { CreateUserUsecase } from '../usecases';
 import { CREATE_USER_USECASE } from '../../constants';
 
-@Controller('users')
+@Controller()
 export class UsersController {
     constructor(@Inject(CREATE_USER_USECASE) private readonly createUserUsecase: CreateUserUsecase) {}
+
+    @Get()
+    public ping() {
+        return 'pong';
+    }
 
     @Post()
     @UsePipes(new ZodValidationPipe(CreateUserSchema))

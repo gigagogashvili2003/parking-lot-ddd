@@ -1,4 +1,4 @@
-import { Logger, Module, OnModuleInit } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, OnModuleInit, RequestMethod } from '@nestjs/common';
 import { NatsModule } from '@app/nats';
 import { ConfigModule } from '@nestjs/config';
 import { UsersController } from './application/controllers';
@@ -8,6 +8,8 @@ import { commands, handlers, models, repositories, usecases } from './providers'
 import { DbModule } from '@app/db';
 import { client as eventStore } from '@app/eventstore-db';
 import { streamNameFilter } from '@eventstore/db-client';
+import { RequestLoggerMiddleware } from '@app/common/middlewares';
+import { ProxyAllowMiddleware } from 'apps/gateway/src/application/middlewares';
 
 @Module({
     imports: [
@@ -43,9 +45,9 @@ export class UsersModule implements OnModuleInit {
         }
     }
 
-    // configure(consumer: MiddlewareConsumer) {
-    //     consumer
-    //         .apply(RequestLoggerMiddleware, ProxyAllowMiddleware)
-    //         .forRoutes({ path: '*', method: RequestMethod.ALL });
-    // }
+    configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply(RequestLoggerMiddleware, ProxyAllowMiddleware)
+            .forRoutes({ path: '*', method: RequestMethod.ALL });
+    }
 }

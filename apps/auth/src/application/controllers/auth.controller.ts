@@ -2,15 +2,15 @@ import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AuthController {
-  constructor() {}
+    constructor() {}
 
-  @Get()
-  getHell() {
-    return 'Hello from auth';
-  }
+    @Get()
+    ping() {
+        return 'pong';
+    }
 
-  @Get('test')
-  test() {
-    return 'TEST';
-  }
+    @Get('test')
+    test() {
+        return 'TEST';
+    }
 }

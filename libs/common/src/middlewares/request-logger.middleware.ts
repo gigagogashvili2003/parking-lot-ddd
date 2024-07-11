@@ -4,20 +4,20 @@ import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class RequestLoggerMiddleware implements NestMiddleware {
-  constructor(private readonly logger: Logger) {}
+    constructor(private readonly logger: Logger) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
-    const { method, originalUrl, body, query, params, ip } = req;
-    const userAgent = req.get('user-agent') || '';
+    use(req: Request, res: Response, next: NextFunction) {
+        const { method, originalUrl, body, query, params, ip } = req;
+        const userAgent = req.get('user-agent') || '';
 
-    this.logger.log(`[${method}] ${originalUrl}`, {
-      body,
-      query,
-      params,
-      ip,
-      userAgent,
-    });
+        this.logger.log(`[${method}] ${originalUrl}`, {
+            body,
+            query,
+            params,
+            ip,
+            userAgent,
+        });
 
-    next();
-  }
+        next();
+    }
 }
