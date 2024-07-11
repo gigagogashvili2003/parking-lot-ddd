@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UseCase } from '@app/common/interfaces';
 import { QueryBus } from '@nestjs/cqrs';
-import { GetUerQuery } from '../queries/get-user';
+import { GetUerQuery } from '../queries';
 
 @Injectable()
 export class GetUserUsecase implements UseCase<string, any> {
