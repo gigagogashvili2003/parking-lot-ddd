@@ -10,6 +10,10 @@ export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 export class UserRepository implements IUserRepository {
     public constructor(@InjectRepository(UserModel) private readonly repository: Repository<UserModel>) {}
 
+    public findOneByUUID(id: string): Promise<UserModel> {
+        return this.repository.findOne({ where: { id } });
+    }
+
     public createOne(model: UserModel) {
         return this.repository.save(model);
     }

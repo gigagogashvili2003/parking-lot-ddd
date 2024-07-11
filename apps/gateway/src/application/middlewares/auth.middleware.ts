@@ -1,16 +1,13 @@
 import { Inject, Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ClientProxy } from '@nestjs/microservices';
 import { NextFunction, Request } from 'express';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-    public constructor(
-        @Inject('AUTH_SERVICE') private readonly authService: ClientProxy,
-        private readonly jwtService: JwtService,
-    ) {}
+    public constructor(@Inject('AUTH_SERVICE') private readonly authClient: ClientProxy) {}
 
-    public use(req: Request, res: Response, next: NextFunction) {
+    public async use(req: Request, res: Response, next: NextFunction) {
         const authHeader = req.headers.authorization;
 
         if (!authHeader) {
@@ -18,17 +15,14 @@ export class AuthMiddleware implements NestMiddleware {
         }
 
         const token = authHeader.split(' ')[1];
-        const user = this.jwtService.verify(token);
+
+        const user = await lastValueFrom(this.authClient.send('validate-token', token));
 
         if (!user) {
             throw new UnauthorizedException('Invalid token!');
         }
 
-        console.log(user);
-
         req['user'] = user;
-        console.log('MOVIDA');
-        console.log(req['user']);
         next();
     }
 }

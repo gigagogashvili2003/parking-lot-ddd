@@ -1,1 +1,2 @@
 export const CREATE_USER_USECASE = Symbol('CREATE_USER_USECASE');
+export const GET_USER_USECASE = Symbol('GET_USER_USECASE');

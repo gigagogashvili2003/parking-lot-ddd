@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersController } from './application/controllers';
 import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { commands, handlers, models, repositories, usecases } from './providers';
+import { commandHandlers, commands, models, queries, queryHandlers, repositories, usecases } from './providers';
 import { DbModule } from '@app/db';
 import { client as eventStore } from '@app/eventstore-db';
 import { streamNameFilter } from '@eventstore/db-client';
@@ -20,7 +20,7 @@ import { ProxyAllowMiddleware } from 'apps/gateway/src/application/middlewares';
         NatsModule,
     ],
     controllers: [UsersController],
-    providers: [Logger, ...repositories, ...usecases, ...commands, ...handlers],
+    providers: [Logger, ...repositories, ...usecases, ...commands, ...commandHandlers, ...queries, ...queryHandlers],
 })
 export class UsersModule implements OnModuleInit {
     public onModuleInit() {
