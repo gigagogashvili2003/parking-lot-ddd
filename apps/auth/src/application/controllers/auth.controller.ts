@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { VALIDATE_TOKEN_USECASE } from '../../constants';
 import { ValidateTokenUseCase } from '../usecases';
@@ -10,15 +10,5 @@ export class AuthController {
     @MessagePattern('validate-token')
     public validateToken(@Payload() token: string) {
         return this.validateTokenUsecase.execute(token);
-    }
-
-    @Get()
-    ping() {
-        return 'pong';
-    }
-
-    @Get('test')
-    test() {
-        return 'TEST';
     }
 }

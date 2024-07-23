@@ -1,4 +1,4 @@
-import { ArrayOfProviders } from '@app/common/types';
+import { ArrayOfClients, ArrayOfProviders } from '@app/common/types';
 import { UserModel } from './infrastructure/models';
 import { USER_REPOSITORY, UserRepository } from './infrastructure/repositories';
 import { CreateUserCommand, CreateUserCommandHandler } from './application/commands/create-user';
@@ -16,3 +16,4 @@ export const queries: ArrayOfProviders = [GetUerQuery];
 export const queryHandlers: ArrayOfProviders = [GetUserQueryHandler];
 export const models = [UserModel];
 export const repositories: ArrayOfProviders = [{ provide: USER_REPOSITORY, useClass: UserRepository }];
+export const clients: ArrayOfClients = [];

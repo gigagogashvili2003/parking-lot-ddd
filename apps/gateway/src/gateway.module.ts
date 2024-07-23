@@ -3,13 +3,11 @@ import { NatsModule } from '@app/nats';
 import { ConfigModule } from '@nestjs/config';
 import { AuthMiddleware, ProxyAllowMiddleware } from './application/middlewares';
 import { RequestLoggerMiddleware } from '@app/common/middlewares';
+import { clients, controllers } from './providers';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({ isGlobal: true, envFilePath: 'apps/gateway/.env' }),
-        NatsModule.register([{ name: 'AUTH_SERVICE', queue: 'auth' }]),
-    ],
-    controllers: [],
+    imports: [ConfigModule.forRoot({ isGlobal: true, envFilePath: 'apps/gateway/.env' }), NatsModule.register(clients)],
+    controllers: [...controllers],
     providers: [Logger],
 })
 export class GatewayModule implements NestModule {
