@@ -12,6 +12,14 @@ export class UserMapper {
         return new User({ firstName, lastName, email, password });
     }
 
+    public static persistenceToEntity(model: UserModel) {
+        const firstName = new FirstName({ value: model.firstName });
+        const lastName = new LastName({ value: model.lastName });
+        const email = new Email({ value: model.email });
+        const password = new Password({ value: model.password });
+        return new User({ firstName, lastName, email, password });
+    }
+
     public static toPersistence(entity: User) {
         const model = new UserModel();
         model.id = entity.id;

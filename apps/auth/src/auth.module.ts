@@ -6,9 +6,11 @@ import { RequestLoggerMiddleware } from '@app/common/middlewares';
 import {} from '@app/common';
 import { JwtModule } from '@nestjs/jwt';
 import { clients, controllers, usecases } from './providers';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
     imports: [
+        CqrsModule,
         JwtModule.register({ global: true, secret: 'secret', signOptions: { expiresIn: '1d' } }),
         ConfigModule.forRoot({ envFilePath: 'apps/auth/.env' }),
         NatsModule.register(clients),

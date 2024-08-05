@@ -12,8 +12,10 @@ import { clients, controllers } from './providers';
 })
 export class GatewayModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
+        consumer.apply(RequestLoggerMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
         consumer
-            .apply(RequestLoggerMiddleware, ProxyAllowMiddleware, AuthMiddleware)
+            .apply(AuthMiddleware)
+            .exclude({ path: 'auth/signup', method: RequestMethod.POST })
             .forRoutes({ path: '*', method: RequestMethod.ALL });
     }
 }

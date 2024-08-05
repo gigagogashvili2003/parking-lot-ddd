@@ -1,9 +1,10 @@
-import { ZodValidationPipe } from '@app/common/pipes';
-import { Body, Controller, Get, Inject, Post, UsePipes } from '@nestjs/common';
-import { CreateUserDto, CreateUserSchema } from '../schemas';
+import { Body, Controller, Inject, Post, UsePipes } from '@nestjs/common';
 import { CreateUserUsecase, GetUserUsecase } from '../usecases';
 import { CREATE_USER_USECASE, GET_USER_USECASE } from '../../constants';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { TGetUser } from '../types';
+import { ZodValidationPipe } from '@app/common/pipes';
+import { CreateUserDto, CreateUserSchema } from '../schemas';
 
 @Controller()
 export class UsersController {
@@ -12,14 +13,9 @@ export class UsersController {
         @Inject(GET_USER_USECASE) private readonly getUserUsecase: GetUserUsecase,
     ) {}
 
-    @Get()
-    public ping() {
-        return 'pong';
-    }
-
-    @MessagePattern('find-user-by-id')
-    public findbyId(@Payload() id: string) {
-        return this.getUserUsecase.execute(id);
+    @MessagePattern('find-user')
+    public findbyId(@Payload() payload: TGetUser) {
+        return this.getUserUsecase.execute(payload);
     }
 
     @Post()

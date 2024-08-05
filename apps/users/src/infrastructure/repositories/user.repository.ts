@@ -14,6 +14,10 @@ export class UserRepository implements IUserRepository {
         return this.repository.findOne({ where: { id } });
     }
 
+    public findOneByEmail(email: string): Promise<UserModel> {
+        return this.repository.findOne({ where: { email } });
+    }
+
     public createOne(model: UserModel) {
         return this.repository.save(model);
     }
