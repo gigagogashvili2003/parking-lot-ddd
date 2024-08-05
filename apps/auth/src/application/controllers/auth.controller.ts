@@ -5,6 +5,7 @@ import { SignupUserUsecase, ValidateTokenUseCase } from '../usecases';
 import { SignupUserDto } from 'libs/shared/schemas';
 import { RpcExceptionFilter } from '@app/common/filters';
 
+@UseFilters(new RpcExceptionFilter())
 @Controller()
 export class AuthController {
     constructor(
@@ -12,7 +13,6 @@ export class AuthController {
         @Inject(SIGNUP_USER_USECASE) private readonly signupUserUsecase: SignupUserUsecase,
     ) {}
 
-    @UseFilters(new RpcExceptionFilter())
     @MessagePattern('signup')
     public async signup(@Payload() dto: SignupUserDto) {
         return this.signupUserUsecase.execute(dto);
